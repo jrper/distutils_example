@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Python.h"
 
 #define PY_ARRAY_UNIQUE_SYMBOL PickerObject_ARRAY_API
@@ -9,9 +10,41 @@
 
 extern "C" {
 
+  static PyObject *myMethod(PyObject *self, PyObject *args) {
+
+    char* mystring;
+    PyArg_ParseTuple(args, "s", &mystring);
+
+    std::cout << mystring;    
+
+    Py_RETURN_NONE;
+
+  }
+
+  static long count=0;
+
+  static PyObject *myKeywordMethod(PyObject *self, PyObject *args,
+				   PyObject *kwargs) {
+
+    int stride=1;
+    static char *kwlist[] = {"stride", NULL};
+    PyArg_ParseTupleAndKeywords(args, kwargs, "i", kwlist, &stride);
+
+    std::cout << stride;
+    count = count + stride;
+
+    PyObject* out = PyLong_FromLong(count);
+
+    return out;
+  }
+
   static char barDocString[] = "Example module.";
 
   static PyMethodDef barMethods[] = {  
+    { (char *)"myMethod", (PyCFunction) myMethod, 
+      METH_VARARGS, (char*) "myMethod docstring."},
+    { (char *)"myKeywordMethod", (PyCFunction) myKeywordMethod, 
+      METH_VARARGS|METH_KEYWORDS, (char*) "myKeywordMethod docstring."},
     { NULL, NULL, 0, NULL }
   };
 

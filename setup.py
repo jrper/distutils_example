@@ -7,10 +7,10 @@ import git
 
 r = git.Repo()
 
-version = r.git.describe('--tags')
+version = '"'+r.git.describe('--tags')+'"'
 
 m = Extension('bar',
-              define [('VERSION_STRING', version)],
+              define_macros = [('VERSION_STRING', version)],
               include_dirs = [imp.find_module('numpy')[1]+'/core/include'],
               sources = ['src/foo.cxx', 'src/bar.cxx'])
 
