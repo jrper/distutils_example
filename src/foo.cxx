@@ -10,6 +10,11 @@
 
 #include "foo.h"
 
+#if PY_MAJOR_VERSION < 3
+#define PyBytes_AsString PyString_AsString
+#define PyBytes_FromString PyString_FromString
+#endif
+
 
 extern "C" {
 
@@ -23,7 +28,7 @@ extern "C" {
   static PyObject* get_name(PyObject* pyself, void *closure) {
     foo *self = (foo *) pyself;
     if (self->name[0]) {
-      return PyString_FromString(self->name);
+      return PyBytes_FromString(self->name);
     } else {
       Py_RETURN_NONE;
     }
@@ -31,7 +36,7 @@ extern "C" {
 
   static int set_name(PyObject* pyself, PyObject* o, void *closure) {
     foo *self = (foo *) pyself;
-    strncpy(self->name, PyString_AsString(o), 255);
+    strncpy(self->name, PyBytes_AsString(o), 255);
     return 0;
   } 
 

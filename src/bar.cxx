@@ -7,6 +7,11 @@
 
 #include "foo.h"
 
+#if PY_MAJOR_VERSION < 3
+#define PyBytes_AsString PyString_AsString
+#define PyBytes_FromString PyString_FromString
+#endif
+
 
 extern "C" {
 
@@ -48,7 +53,7 @@ extern "C" {
     { NULL, NULL, 0, NULL }
   };
 
-PyObject * pyVersion = PyString_FromString(VERSION_STRING);
+PyObject * pyVersion = PyBytes_FromString(VERSION_STRING);
 
 #if PY_MAJOR_VERSION >= 3
     static struct PyModuleDef moduledef = {
